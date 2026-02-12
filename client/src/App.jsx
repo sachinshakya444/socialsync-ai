@@ -49,7 +49,7 @@ function App() {
     
     try {
       // 1. Content Generate karo Backend se
-      const response = await axios.post('http://localhost:5000/generate', {
+      const response = await axios.post('https://socialsync-ai.onrender.com', {
         topic,
         platform
       });
