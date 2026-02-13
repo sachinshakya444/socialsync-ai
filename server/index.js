@@ -2,30 +2,31 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import fetch from 'node-fetch';
-import open from 'open';
 
 const app = express();
 
-// Middlewares
-app.use(cors()); // Frontend connection allow karne ke liye
-app.use(express.json()); // JSON data read karne ke liye
+// --- MIDDLEWARES ---
+// Sabhi origins ko allow karne ke liye (Vercel connection fix)
+app.use(cors()); 
+app.use(express.json()); 
 
-const API_KEY = process.env.GEMINI_KEY;
+const API_KEY=process.env.GEMINI_KEY;
 
-// 1. Home Route (Browser mein check karne ke liye)
+// --- 1. HOME ROUTE ---
+// Browser mein verify karne ke liye ki backend live hai ya nahi
 app.get('/', (req, res) => {
     res.send(`
         <div style="font-family: sans-serif; text-align: center; margin-top: 50px;">
             <h1 style="color: #4F46E5;">SocialSync AI Backend is LIVE! 🚀</h1>
-            <p>Step 1 & 2 Completed successfully.</p>
+            <p>Backend Render par successfully chal raha hai.</p>
             <p style="background: #f3f4f6; padding: 10px; display: inline-block; border-radius: 5px;">
-                API Endpoint: <code>POST /generate</code>
+                Frontend Endpoint: <code>POST /generate</code>
             </p>
         </div>
     `);
 });
 
-// 2. AI Content Generation Route
+// --- 2. AI CONTENT GENERATION ROUTE ---
 app.post('/generate', async (req, res) => {
     try {
         const { topic, platform } = req.body;
@@ -37,7 +38,7 @@ app.post('/generate', async (req, res) => {
             });
         }
 
-        // Correct Model Name: gemini-1.5-flash
+        // Fix: Model name gemini-1.5-flash use karein (2.5 exist nahi karta)
         const modelName = "gemini-2.5-flash";
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${API_KEY}`;
 
@@ -53,7 +54,7 @@ app.post('/generate', async (req, res) => {
 
         const data = await response.json();
 
-        // Error Handling for Google API
+        // Google API Errors Handle karein
         if (data.error) {
             console.error("Google API Error:", data.error.message);
             return res.status(data.error.code || 500).json({ 
@@ -76,12 +77,11 @@ app.post('/generate', async (req, res) => {
     }
 });
 
-// 3. Server Startup
-const PORT = 5000;
-app.listen(PORT, async () => {
-    console.log(`\n🚀 Server is running at http://localhost:${PORT}`);
-    console.log(`📡 Testing API...`);
-    
-    // Browser automatically khul jayega
-    await open(`http://localhost:${PORT}`);
+// --- 3. SERVER STARTUP ---
+// Fix: Render ke liye process.env.PORT use karna compulsory hai
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`\n🚀 SocialSync Backend running on port ${PORT}`);
+    // Note: 'open' package ko hata diya hai kyunki server par browser nahi hota
 });
