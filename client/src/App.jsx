@@ -5,6 +5,9 @@ import { auth, db, signInWithGoogle, logout } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
 
+
+
+
 function App() {
   const [user, setUser] = useState(null);
   const [topic, setTopic] = useState('');
@@ -49,10 +52,12 @@ function App() {
     
     try {
       // 1. Content Generate karo Backend se
-      const response = await axios.post('https://socialsync-ai.onrender.com', {
+      const response = await axios.post('https://socialsync-ai.onrender.com/generate', {
         topic,
         platform
       });
+
+      
       setResult(response.data.content);
 
       // 2. Database mein Count badhao (+1)
