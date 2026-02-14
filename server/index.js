@@ -39,7 +39,7 @@ app.post('/generate', async (req, res) => {
         }
 
         // Fix: Model name gemini-1.5-flash use karein (2.5 exist nahi karta)
-        const modelName = "gemini-1.5-flash";
+        const modelName = "gemini-2.5-flash";
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${API_KEY}`;
 
         const response = await fetch(url, {
